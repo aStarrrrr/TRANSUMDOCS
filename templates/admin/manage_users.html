@@ -1,0 +1,67 @@
+{% include 'admin/admin_header.html' %}
+<!-- <table>
+    <tr>
+        <th>Slno</th>
+        <th>First name</th>
+        <th>Second name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    {% for i in data %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{i.first_name}}</td>
+        <td>{{i.last_name}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.phone}}</td>
+        <td>
+            <a href="/admin_block_user/{{i.LOGIN_id}}">BLOCK</a>
+            <a href="/admin_unblock_user/{{i.LOGIN_id}}">UNBLOCK</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table> -->
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Files</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First name</th>
+                                <th scope="col">Last name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Action</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>{{i.first_name}}</td>
+                                    <td>{{i.last_name}}</td>
+                                    <td>{{i.email}}</td>
+                                    <td>{{i.phone}}</td>
+                                    <td>
+                                        <a class="btn btn-danger" href="/admin_block_user/{{i.LOGIN_id}}">BLOCK</a>
+                                        <a class="btn btn-danger" href="/admin_unblock_user/{{i.LOGIN_id}}">UNBLOCK</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'user/user_footer.html' %}

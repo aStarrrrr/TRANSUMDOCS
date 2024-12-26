@@ -1,0 +1,61 @@
+{% include 'admin/admin_header.html' %}
+<!-- <center>
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Complaint</th>
+            <th>User</th>
+            <th>Reply</th>
+            <th>Action</th>
+        </tr>
+        {% for i in data %}
+        <tr>
+            <td>{{i.date}}</td>
+            <td>{{i.complaint}}</td>
+            <td>{{i.USER.first_name}}</td>
+            <td>{{i.reply}}</td>
+            <td><a href="/admin_complaint_reply/{{i.id}}">Reply</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</center> -->
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Files</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Complaint</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Reply</th>
+                                <th scope="col">Action</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <th>{{forloop.counter}}</th>
+                                <td>{{i.date}}</td>
+                                <td>{{i.complaint}}</td>
+                                <td>{{i.USER.first_name}}</td>
+                                <td>{{i.reply}}</td>
+                                <td><a class="btn btn-danger" href="/admin_complaint_reply/{{i.id}}">Reply</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'user/user_footer.html' %}

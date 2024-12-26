@@ -1,0 +1,75 @@
+{% include 'user/user_header.html' %}
+<!-- <form action="" method="post">
+    <textarea name="complaint" id=""></textarea>
+    <br>
+    <input type="submit" value="Send" name="submit">
+</form> -->
+
+<br>
+<form action="" method="post">
+    <div class="col-sm-12 col-xl-6">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h6 class="mb-4">Enter your complaint</h6>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here"
+                    id="floatingTextarea" name="complaint" style="height: 150px;"></textarea>
+                <label for="floatingTextarea">Complaint</label>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary" name="submit">Send</button>
+        </div>
+    </div>
+</form>
+
+<!-- <center>
+    <table border="1">
+        <tr>
+            <th>Slno</th>
+            <th>Date</th>
+            <th>Complaint</th>
+            <th>Reply</th>
+        </tr>
+        {% for i in data %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.date}}</td>
+            <td>{{i.complaint}}</td>
+            <td>{{i.reply}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</center> -->
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Complaints and response</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Complaint</th>
+                                <th scope="col">Reply</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>{{i.date}}</td>
+                                    <td>{{i.complaint}}</td>
+                                    <td>{{i.reply}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'user/user_footer.html' %}

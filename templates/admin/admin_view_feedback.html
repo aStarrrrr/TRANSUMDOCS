@@ -1,0 +1,53 @@
+{% include 'admin/admin_header.html' %}
+<!-- <center>
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Feedback</th>
+            <th>User</th>
+        </tr>
+        {% for i in data %}
+        <tr>
+            <td>{{i.date}}</td>
+            <td>{{i.feedback}}</td>
+            <td>{{i.USER.first_name}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</center> -->
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Files</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Feedback</th>
+                        </thead>
+                        <tbody>
+                            {% for i in data %}
+                            <tr>
+                                <th>{{forloop.counter}}</th>
+                                <td>{{i.date}}</td>
+                                <td>{{i.feedback}}</td>
+                                <td>{{i.USER.first_name}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'user/user_footer.html' %}

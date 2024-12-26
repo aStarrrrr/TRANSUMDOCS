@@ -1,0 +1,57 @@
+{% include 'user/user_header.html' %}
+    <!-- <center>
+        <table>
+            <tr>
+                <th>First name</th>
+                <td>{{data.first_name}}</td>
+            </tr>
+            <tr>
+                <th>Last name</th>
+                <td>{{data.last_name}}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{data.email}}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{data.phone}}</td>
+            </tr>
+        </table>
+    </center> -->
+
+
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            
+            <div class="col-12">
+                <div class="bg-secondary rounded h-100 p-4">
+                    <h6 class="mb-4">Profile</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>First name</th>
+                                <td>{{data.first_name}}</td>
+                            </tr>
+                            <tr>
+                                <th>Last name</th>
+                                <td>{{data.last_name}}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{data.email}}</td>
+                            </tr>
+                            <tr>
+                                <th>Phone</th>
+                                <td>{{data.phone}}</td>
+                            </tr>
+                        </table>
+                        <a href="/user_change_password"><button type="button" class="btn btn-danger m-2">Change password</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% include 'user/user_footer.html' %}

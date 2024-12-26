@@ -1,0 +1,25 @@
+{% include 'admin/admin_header.html' %}
+<!-- <form action="" method="post">
+    <textarea name="reply" id=""></textarea>
+    <br>
+    <input type="submit" name="submit" value="Send">
+</form> -->
+
+
+<form action="" method="post">
+    <div class="col-sm-12 col-xl-6">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h6 class="mb-4">Enter reply</h6>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here"
+                    id="floatingTextarea" name="reply" style="height: 150px;"></textarea>
+                <label for="floatingTextarea">Reply</label>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary" name="submit">Send</button>
+        </div>
+    </div>
+</form>
+
+
+{% include 'user/user_footer.html' %}
