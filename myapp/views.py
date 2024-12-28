@@ -269,6 +269,7 @@ def user_feedback(request):
     if request.session['log']=='out':
         return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
     userid = request.session['user_id']
+    user=User.objects.get( id=userid)
     if 'submit' in request.POST:
         feedback = request.POST['feedback']
 
@@ -277,7 +278,7 @@ def user_feedback(request):
 
         return HttpResponse(f"<script>alert('Feedback submitted');window.location='/user_feedback'</script>")
 
-    return render(request,'user/user_feedback.html')
+    return render(request,'user/user_feedback.html' , {'user':user})
 
 def user_complaints(request):
     print(request.session['log'])
@@ -286,6 +287,7 @@ def user_complaints(request):
         return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
     userid = request.session['user_id']
     data = Complaint.objects.filter(USER_id=userid)
+    user=User.objects.get( id=userid)
     if 'submit' in request.POST:
         complaint = request.POST['complaint']
 
@@ -294,7 +296,7 @@ def user_complaints(request):
 
         return HttpResponse(f"<script>alert('Complaint submitted');window.location='/user_complaints'</script>")
 
-    return render(request,'user/user_complaints.html',{'data':data})
+    return render(request,'user/user_complaints.html',{'data':data , 'user':user})
 
 def user_change_password(request):
     if request.session['log']=='out':
@@ -320,8 +322,9 @@ def user_files(request):
     print(request.session['log'])
     userid = request.session['user_id']
     data = File.objects.filter(USER_id=userid)
+    user=User.objects.get( id=userid)
 
-    return render(request,'user/user_files.html',{'data':data})
+    return render(request,'user/user_files.html',{'data':data , 'user':user})
 
 def user_history(request):
     if request.session['log']=='out':
