@@ -25,15 +25,10 @@ def login(request):
             res = Login.objects.get(username=username,password=password)
             request.session['login_id']=res.pk
             login_id=request.session['login_id']
-
             if res.user_type =='admin':
                 request.session['log']="in"
-                
                 return HttpResponse(f"<script>alert('welcome Admin');window.location='admin_home'</script>")
-
             elif res.user_type =='user':
-               
-
                 if User.objects.filter(LOGIN_id=login_id).exists():
                     res2=User.objects.get(LOGIN_id=login_id)
                     if res2:
@@ -44,16 +39,12 @@ def login(request):
                         return HttpResponse(f"<script>alert('invalid user');window.location='login'</script>")
                 else:
                         return HttpResponse(f"<script>alert('this user ID  does not exist');window.location='login'</script>")
-
             elif res.user_type =='blocked':
                 return HttpResponse(f"<script>alert('you are blocked by admin');window.location='/login'</script>")
-
             elif res.user_type =='pending':
                 return HttpResponse(f"<script>alert('you are not approved by admin....please wait for approval');window.location='/login'</script>")
-            
             else:
                 return HttpResponse(f"<script>alert('invalid user ');window.location='login'</script>")
-
         else:
             return HttpResponse(f"<script>alert('invalid username or password');window.location='login'</script>")
     return render(request,'public/login.html')
@@ -67,7 +58,6 @@ def register(request):
         otp = random.randint(1000, 9999)
         request.session['otp'] = str(otp)  # Save OTP in session
         print(otp,"oooooootttttttttpppppppppp")
-
         # Retrieve form data
         username = request.POST['username']
         password = request.POST['password']
@@ -130,7 +120,6 @@ def otp_for_registration_post(request):
         return HttpResponse("<script>alert('Invalid OTP. Please try again.');window.location='/otp_for_registration';</script>")
     
 def admin_home(request):
-
     if request.session['log']=="out":
         return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
 
@@ -185,43 +174,6 @@ def user_header(request ):
     userid = request.session['user_id']
     user=User.objects.get( id=userid)
     return render(request,'user/user_header.html' , {'user':user})
-
-# def user_home(request ):
-#     if request.session['log']=='out':
-#         return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
-#     userid = request.session['user_id']
-#     user=User.objects.get( id=userid)
-#     if 'submit' in request.POST:
-#         file = request.FILES['input_file']
-
-#         import datetime
-#         file_extension = Path(file.name).suffix  
-#         if not file_extension:  
-#             file_extension = ".bin" 
-#         date = datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + file_extension
-#         fs = FileSystemStorage() 
-#         fp = fs.save(date, file)
-
-#         text = ""
-#         with fitz.open(file) as pdf:
-#             for page_num in range(len(pdf)):
-#                 text += pdf[page_num].get_text()
-#             return text
-#         print(text)
-
-#         # import datetime
-#         # file_extension = Path(file.name).suffix  
-#         # if not file_extension:  
-#         #     file_extension = ".bin" 
-#         # date = datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + file_extension
-#         # fs = FileSystemStorage() 
-#         # fp = fs.save(date, file)
-
-#         # q1 = File(USER_id=userid,file=fs.url(fp),output_summary='pending',output_translated='pending')
-#         # q1.save()
-
-#         return HttpResponse(f"<script>alert('File uploaded');window.location='user_home'</script>")
-#     return render(request,'user/user_home.html' , {'user':user})
 
 def user_home(request):
     if request.session.get('log') == 'out':
@@ -299,8 +251,8 @@ def user_complaints(request):
     return render(request,'user/user_complaints.html',{'data':data , 'user':user})
 
 def user_change_password(request):
-    if request.session['log']=='out':
-        return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
+    # if request.session['log']=='out':
+    #     return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
     # if request.session['log']=="out":
     #     return HttpResponse(f"<script>alert('You havent logged in yet...!');window.location='/login'</script>")
     login_id=request.session['login_id']
@@ -345,8 +297,8 @@ def otp_entering_page(request):
     return render (request,'public/otp_for_forgot_password.html')
 
 def forgot_password(request):
-        if request.session['log']=='out':
-            return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
+        # if request.session['log']=='out':
+        #     return HttpResponse(f"<script>alert('please login');window.location='login'</script>")
         if 'submit' in request.POST:
             otp=0
             uname=request.POST['uname']
@@ -412,10 +364,3 @@ def change_password_on_forgot_password(request):
 def logout(request):
     request.session['log']="out"
     return HttpResponse(f"<script>alert('Logged out');window.location='/login'</script>")
-
-# def extract_text_from_pdf(pdf_path):
-#     text = ""
-#     with fitz.open(pdf_path) as pdf:
-#         for page_num in range(len(pdf)):
-#             text += pdf[page_num].get_text()
-#     return text
