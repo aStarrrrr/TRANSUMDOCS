@@ -10,9 +10,9 @@
                 <h5>Upload your file</h5>
                 <br>
                 <br>
-                <h3>PDF</h3>
-                    <br>
-                <form action="" method="post" enctype="multipart/form-data">
+                <!-- <h3>PDF</h3>
+                    <br> -->
+                <!-- <form action="" method="post" enctype="multipart/form-data">
                     <input type="file" name="input_file" required>
                     <br>
                     <input type="submit" value="UPLOAD" name="submit">
@@ -25,10 +25,34 @@
                     <input type="file" name="input_file" required>
                     <br>
                     <input type="submit" value="UPLOAD" name="submit">
-                </form>
-            </div>
-        </div>
-    </div>
-</center>
+                </form> -->
+                <center>
+                    <!-- <h1 style="color:white">Welcome, {{ user.username }}!</h1> -->
+                
+                    <!-- {% if extracted_text %}
+                        <h2 style="color:white">Extracted Text from PDF:</h2>
+                        <pre style="color:white">{{ extracted_text }}</pre>
+                    {% else %}
+                        <h2>No PDF uploaded yet</h2>
+                    {% endif %} -->
+                
+                    {% if summarized_text %}
+                        <h2 style="color:white">Summary:</h2>
+                        <pre>{{ summarized_text }}</pre>
+                    {% else %}
+                        <h2 style="color:white">No summary available</h2>
+                    {% endif %}
+                
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label style="color:white" for="pdf_file">Upload a PDF:</label>
+                        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
+                
+                
+                
+                        <button type="submit">Upload and Summarize</button>
+                    </form>
+                </center>
+                
 
 {% include 'user/user_footer.html' %}

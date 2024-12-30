@@ -27,6 +27,6 @@ class Complaint(models.Model):
 class File(models.Model):
     USER=models.ForeignKey(User,on_delete=models.CASCADE)
     date=models.DateField(auto_now=True)
-    file=models.CharField(max_length=1500)
-    output_summary=models.CharField(max_length=1500)
-    output_translated=models.CharField(max_length=1500)
+    file=models.CharField(max_length=10000)
+    output_summary=models.CharField(max_length=10000)
+    output_translated=models.CharField(max_length=10000)

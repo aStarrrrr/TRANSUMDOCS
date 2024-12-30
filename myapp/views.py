@@ -175,40 +175,40 @@ def user_header(request ):
     user=User.objects.get( id=userid)
     return render(request,'user/user_header.html' , {'user':user})
 
-def user_home(request):
-    if request.session.get('log') == 'out':
-        return HttpResponse(
-            "<script>alert('please login');window.location='login'</script>"
-        )
+# def user_home(request):
+#     if request.session.get('log') == 'out':
+#         return HttpResponse(
+#             "<script>alert('please login');window.location='login'</script>"
+#         )
 
-    userid = request.session.get('user_id')
-    user = User.objects.get(id=userid)
+#     userid = request.session.get('user_id')
+#     user = User.objects.get(id=userid)
 
-    if 'submit' in request.POST:
-        file = request.FILES['input_file']
+#     if 'submit' in request.POST:
+#         file = request.FILES['input_file']
 
-        fs = FileSystemStorage()
-        filename = fs.save(file.name, file)
-        file_path = fs.path(filename)
+#         fs = FileSystemStorage()
+#         filename = fs.save(file.name, file)
+#         file_path = fs.path(filename)
 
-        try:
-            text = ""
-            with fitz.open(file_path) as pdf:
-                for page_num in range(len(pdf)):
-                    text += pdf[page_num].get_text()
-            print(text)
-            return HttpResponse(
-                f"<script>alert('File processed successfully');window.location='user_home'</script>"
-            )
-        except Exception as e:
-            print(f"Error processing file: {e}")
-            return HttpResponse(
-                f"<script>alert('Error processing file: {e}');window.location='user_home'</script>"
-            )
-        finally:
-            fs.delete(filename)
+#         try:
+#             text = ""
+#             with fitz.open(file_path) as pdf:
+#                 for page_num in range(len(pdf)):
+#                     text += pdf[page_num].get_text()
+#             print(text)
+#             return HttpResponse(
+#                 f"<script>alert('File processed successfully');window.location='user_home'</script>"
+#             )
+#         except Exception as e:
+#             print(f"Error processing file: {e}")
+#             return HttpResponse(
+#                 f"<script>alert('Error processing file: {e}');window.location='user_home'</script>"
+#             )
+#         finally:
+#             fs.delete(filename)
 
-    return render(request, 'user/user_home.html', {'user': user})
+#     return render(request, 'user/user_home.html', {'user': user})
 
 def user_view_profile(request):
     if request.session['log']=='out':
@@ -364,3 +364,125 @@ def change_password_on_forgot_password(request):
 def logout(request):
     request.session['log']="out"
     return HttpResponse(f"<script>alert('Logged out');window.location='/login'</script>")
+
+
+
+
+
+
+
+from django.shortcuts import render
+from pypdf import PdfReader
+from io import BytesIO
+from transformers import pipeline
+from summarizer import Summarizer  
+
+def user_home(request):
+    userid = request.session['user_id']
+    user=User.objects.get( id=userid)
+    
+    extracted_text = None  # Variable to hold the extracted text
+    summarized_text = None  # Variable to hold the summarized text
+
+    if request.method == 'POST' and 'pdf_file' in request.FILES:
+        # Get the uploaded PDF file
+        uploaded_file = request.FILES['pdf_file']
+
+        # Read the file into memory (using BytesIO)
+        pdf_path = BytesIO(uploaded_file.read())
+
+        # Create a PdfReader object from the file object
+        reader = PdfReader(pdf_path)
+
+        # Extract text from all pages
+        extracted_text = ""
+        for page_number in range(len(reader.pages)):
+            page = reader.pages[page_number]
+            text = page.extract_text()
+            extracted_text += text
+
+        # Print the extracted text to the console
+        print("Extracted Text:/")
+        # print(extracted_text)
+
+        # Summarize using BERT (Extractive Summarizer)
+        model = Summarizer()  
+
+        if extracted_text:
+            # Summarize the extracted text
+            summarized_text = model(extracted_text)
+
+            # Print the summarized text to the console
+            print("Summarized Text (BERT):")
+            print(summarized_text)
+            # fs = FileSystemStorage() 
+            # fp = fs.save(uploaded_file.name, uploaded_file)
+            q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
+            q1.save()
+            # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+    # Pass both extracted text and summarized text to the template
+    return render(request, 'user/user_home.html', {
+        'user':user,
+        'extracted_text': extracted_text,
+        'summarized_text': summarized_text
+    })
+
+
+
+import pytesseract
+from PIL import Image
+from io import BytesIO
+from summarizer import Summarizer
+from django.core.files.storage import FileSystemStorage
+from .models import File  # Assuming you have a model named File for saving the results
+
+# Make sure pytesseract points to the correct Tesseract executable (for Windows or other systems)
+# Example for Windows:
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+def upload_img(request):
+    userid = request.session['user_id']
+    user = User.objects.get(id=userid)
+
+    extracted_text = None  # Variable to hold the extracted text from the image
+    summarized_text = None  # Variable to hold the summarized text
+
+    if request.method == 'POST':
+        if 'image_file' in request.FILES:
+            # Handle image file (e.g., JPG, PNG)
+            uploaded_image = request.FILES['image_file']
+
+            # Read the image file into memory (using BytesIO)
+            image_path = BytesIO(uploaded_image.read())
+
+            # Use Pillow to open the image
+            image = Image.open(image_path)
+
+            # Extract text from the image using pytesseract
+            extracted_text = pytesseract.image_to_string(image)
+
+            print("Extracted Text from Image:")
+            print(extracted_text)
+
+            
+            model = Summarizer()  
+
+            if extracted_text:
+                summarized_text = model(extracted_text)
+                print("Summarized Text from Image:")
+                print(summarized_text)
+
+                # Save the summarized text and the file to the database (optional)
+                fs = FileSystemStorage()
+                fp = fs.save(uploaded_image.name, uploaded_image)
+                q1 = File(USER_id=userid, file=fs.url(fp), output_summary=summarized_text, output_translated='pending')
+                q1.save()
+
+    # Pass the extracted text and summarized text to the template
+    return render(request, 'user/upload_img.html',{
+        'user': user,
+        'extracted_text': extracted_text,
+        'summarized_text': summarized_text }
+    )

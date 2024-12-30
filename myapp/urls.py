@@ -23,7 +23,7 @@ urlpatterns = [
     path('logout',views.logout),
     path('register',views.register),
     path('admin_home',views.admin_home),
-    path('user_home',views.user_home),
+    # path('user_home',views.user_home),
     path('admin_manage_user',views.admin_manage_users),
     path('admin_block_user/<int:id>',views.admin_block_user),
     path('admin_unblock_user/<int:id>',views.admin_unblock_user),
@@ -44,6 +44,8 @@ urlpatterns = [
     path("otp_post_forgot/",views.otp_post_forgot),
     path('change_password_on_forgot_password',views.change_password_on_forgot_password),
     path('otp_entering_page',views.otp_entering_page),
+    path('upload_img',views.upload_img),
+    path('user_home',views.user_home),
 
 
 ]
