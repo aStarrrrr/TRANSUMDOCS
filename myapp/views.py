@@ -1,7 +1,7 @@
 from pathlib import Path
 from django.shortcuts import render,HttpResponse
 from django.http import JsonResponse
-from .models import*
+from .models import *
 import datetime
 from django.core.files.storage import FileSystemStorage
 from email.mime.text import MIMEText
@@ -9,12 +9,28 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 import smtplib
-import fitz
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponse
+from django.shortcuts import render
+import random
+from django.shortcuts import render
+from pypdf import PdfReader
+from io import BytesIO
+from transformers import pipeline
+from summarizer import Summarizer  
+import pytesseract
+from PIL import Image
+from io import BytesIO
+from django.core.files.storage import FileSystemStorage
+from .models import File  
+from summarizer import Summarizer
+# import fitz
 
 from django.http import HttpResponse
 from django.shortcuts import render
 from pathlib import Path
-import fitz 
+# import fitz 
 
 def login(request):
     request.session['log']="out"
@@ -52,12 +68,88 @@ def login(request):
 def dd(request):
     return render(request,"public/login.html")
 
+# def register(request):
+#     if request.method == 'POST' and 'submit' in request.POST:
+#         # Generate a random OTP
+#         otp = random.randint(1000, 9999)
+#         request.session['otp'] = str(otp)  # Save OTP in session
+#         print(otp,"oooooootttttttttpppppppppp")
+#         # Retrieve form data
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         first_name = request.POST['fname']
+#         last_name = request.POST['lname']
+#         email1 = request.POST['email']
+#         phone = request.POST['phone']
+
+#         request.session["username"]=username
+#         request.session["password"]=password
+#         request.session["fname"]=first_name
+#         request.session["lname"]=last_name
+#         request.session["email"]=email1
+#         request.session["phone"]=phone
+
+#         # Save the user and login details
+       
+#         # Prepare and send email
+#         # subject = 'Your OTP for Registration'
+#         # message = f"""
+#         # Thank you for registering!
+        
+#         # Please use the following OTP to verify your account:
+#         # - OTP: {otp}
+#         # """
+#         # from_email = settings.EMAIL_HOST_USER
+#         # recipient_list = [email1]
+#         # print(recipient_list,"-----------------------------------------")
+
+#         # try:
+#         #     send_mail(subject, message, from_email, recipient_list)
+#         # except Exception as e:
+#         #     return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/register';</script>")
+
+#         # return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
+
+
+#         from django.core.mail import send_mail
+#     from django.conf import settings
+
+#     subject = 'Test Email'
+#     message = f"""
+#     This is a test email from Django.
+
+#     Here are the details:
+#     - Username: {otp}
+   
+#     """    
+#     from_email = settings.EMAIL_HOST_USER
+#     recipient_list = [email1]
+
+#     try:
+#         send_mail(subject, message, from_email, recipient_list)
+#         return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
+#     except Exception as e:
+#         return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/register';</script>")
+
+
+#         # Success message
+
+
+
+
+
+#     return render(request, 'public/register.html')
+
+
+
+
 def register(request):
     if request.method == 'POST' and 'submit' in request.POST:
         # Generate a random OTP
         otp = random.randint(1000, 9999)
         request.session['otp'] = str(otp)  # Save OTP in session
-        print(otp,"oooooootttttttttpppppppppp")
+        print(otp, "oooooootttttttttpppppppppp")
+
         # Retrieve form data
         username = request.POST['username']
         password = request.POST['password']
@@ -66,34 +158,44 @@ def register(request):
         email1 = request.POST['email']
         phone = request.POST['phone']
 
-        request.session["username"]=username
-        request.session["password"]=password
-        request.session["fname"]=first_name
-        request.session["lname"]=last_name
-        request.session["email"]=email1
-        request.session["phone"]=phone
+        # Save data in session for later use
+        request.session["username"] = username
+        request.session["password"] = password
+        request.session["fname"] = first_name
+        request.session["lname"] = last_name
+        request.session["email"] = email1
+        request.session["phone"] = phone
 
-        # Save the user and login details
-       
-        # Prepare and send email
-        subject = 'Your OTP for Registration'
-        message = f"""
-        Thank you for registering!
-        
-        Please use the following OTP to verify your account:
-        - OTP: {otp}
-        """
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email1]
 
-        try:
-            send_mail(subject, message, from_email, recipient_list)
-        except Exception as e:
-            return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/register';</script>")
+        subject = 'Your College Code'
+        message = f'Your College code is: {otp}'
+        recipient_list = [email1]  # Assuming 'email' is the field storing the college's email
 
-        return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
+        send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
+
+        return HttpResponse(""" <script> alert('Code Generated and emailed');window.location='/otp_for_registration'</script>""")
+
+
+        # # Prepare and send email
+        # subject = 'Test Email'
+        # message = f"""
+        # This is a test email from Django.
+
+        # Here are the details:
+        # - Username: {username}
+        # - OTP: {otp}
+        # """
+        # from_email = settings.EMAIL_HOST_USER
+        # recipient_list = [email1]
+
+        # try:
+        #     send_mail(subject, message, from_email, recipient_list)
+        #     return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
+        # except Exception as e:
+        #     return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/otp_for_registration';</script>")
 
     return render(request, 'public/register.html')
+
 
 def otp_for_registration(request):
         return render(request, 'public/otp_for_registration.html')
@@ -367,19 +469,66 @@ def logout(request):
 
 
 
+# def user_home(request):
+#     userid = request.session['user_id']
+#     user=User.objects.get( id=userid)
+    
+#     extracted_text = None  # Variable to hold the extracted text
+#     summarized_text = None  # Variable to hold the summarized text
+
+#     if request.method == 'POST' and 'pdf_file' in request.FILES:
+#         # Get the uploaded PDF file
+#         uploaded_file = request.FILES['pdf_file']
+
+#         # Read the file into memory (using BytesIO)
+#         pdf_path = BytesIO(uploaded_file.read())
+
+#         # Create a PdfReader object from the file object
+#         reader = PdfReader(pdf_path)
+
+#         # Extract text from all pages
+#         extracted_text = ""
+#         for page_number in range(len(reader.pages)):
+#             page = reader.pages[page_number]
+#             text = page.extract_text()
+#             extracted_text += text
+
+#         # Print the extracted text to the console
+#         print("Extracted Text:/")
+#         # print(extracted_text)
+#         # Summarize using BERT (Extractive Summarizer)
+#         model = Summarizer()  # Load the BERT extractive summarizer model
+
+#         if extracted_text:
+#             # Summarize the extracted text
+#             summarized_text = model(extracted_text)
+
+#             # Print the summarized text to the console
+#             print("Summarized Text (BERT):")
+#             print(summarized_text)
+#             # fs = FileSystemStorage() 
+#             # fp = fs.save(uploaded_file.name, uploaded_file)
+#             q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
+#             q1.save()
+#             # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+#     # Pass both extracted text and summarized text to the template
+#     return render(request, 'user/user_home.html', {
+#         'user':user,
+#         'extracted_text': extracted_text,
+#         'summarized_text': summarized_text
+#     })
 
 
-
-
-from django.shortcuts import render
-from pypdf import PdfReader
 from io import BytesIO
-from transformers import pipeline
-from summarizer import Summarizer  
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+from PyPDF2 import PdfReader  # Alternatively, use fitz (PyMuPDF) or pdfplumber for better extraction
+from summarizer import Summarizer  # Extractive summarizer
 
 def user_home(request):
     userid = request.session['user_id']
-    user=User.objects.get( id=userid)
+    user = User.objects.get(id=userid)
     
     extracted_text = None  # Variable to hold the extracted text
     summarized_text = None  # Variable to hold the summarized text
@@ -388,58 +537,115 @@ def user_home(request):
         # Get the uploaded PDF file
         uploaded_file = request.FILES['pdf_file']
 
-        # Read the file into memory (using BytesIO)
-        pdf_path = BytesIO(uploaded_file.read())
+        try:
+            # Read the file into memory (using BytesIO)
+            pdf_path = BytesIO(uploaded_file.read())
 
-        # Create a PdfReader object from the file object
-        reader = PdfReader(pdf_path)
+            # Create a PdfReader object from the file object
+            reader = PdfReader(pdf_path)
 
-        # Extract text from all pages
-        extracted_text = ""
-        for page_number in range(len(reader.pages)):
-            page = reader.pages[page_number]
-            text = page.extract_text()
-            extracted_text += text
+            # Extract text from all pages
+            extracted_text = ""
+            for page_number in range(len(reader.pages)):
+                page = reader.pages[page_number]
+                text = page.extract_text()
+                extracted_text += text.strip() + "\n"
 
-        # Print the extracted text to the console
-        print("Extracted Text:/")
-        # print(extracted_text)
+            # Summarize using BERT (Extractive Summarizer)
+            model = Summarizer()  # Load the BERT extractive summarizer model
 
-        # Summarize using BERT (Extractive Summarizer)
-        model = Summarizer()  
+            if extracted_text:
+                # Summarize the extracted text
+                summarized_text = model(extracted_text, min_length=50, max_length=500)
 
-        if extracted_text:
-            # Summarize the extracted text
-            summarized_text = model(extracted_text)
+                # Save file and summary to the database
+                q1 = File(USER_id=userid, file=uploaded_file, output_summary=summarized_text, output_translated='pending')
+                q1.save()
 
-            # Print the summarized text to the console
-            print("Summarized Text (BERT):")
-            print(summarized_text)
-            # fs = FileSystemStorage() 
-            # fp = fs.save(uploaded_file.name, uploaded_file)
-            q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
-            q1.save()
-            # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        except Exception as e:
+            print(f"Error processing the PDF: {e}")
+            return render(request, 'user/user_home.html', {
+                'user': user,
+                'error': "There was an issue processing your PDF file. Please try again."
+            })
 
     # Pass both extracted text and summarized text to the template
     return render(request, 'user/user_home.html', {
-        'user':user,
+        'user': user,
         'extracted_text': extracted_text,
         'summarized_text': summarized_text
     })
 
 
 
-import pytesseract
-from PIL import Image
-from io import BytesIO
-from summarizer import Summarizer
-from django.core.files.storage import FileSystemStorage
-from .models import File  # Assuming you have a model named File for saving the results
+
+
+
+
+
+
+
+# def user_home(request):
+#     userid = request.session['user_id']
+#     user=User.objects.get( id=userid)
+    
+#     extracted_text = None  # Variable to hold the extracted text
+#     summarized_text = None  # Variable to hold the summarized text
+
+#     if request.method == 'POST' and 'pdf_file' in request.FILES:
+#         # Get the uploaded PDF file
+#         uploaded_file = request.FILES['pdf_file']
+
+#         # Read the file into memory (using BytesIO)
+#         pdf_path = BytesIO(uploaded_file.read())
+
+#         # Create a PdfReader object from the file object
+#         reader = PdfReader(pdf_path)
+
+#         # Extract text from all pages
+#         extracted_text = ""
+#         for page_number in range(len(reader.pages)):
+#             page = reader.pages[page_number]
+#             text = page.extract_text()
+#             extracted_text += text
+
+#         # Print the extracted text to the console
+#         print("Extracted Text:/")
+#         # print(extracted_text)
+
+#         # Summarize using BERT (Extractive Summarizer)
+#         model = Summarizer()  
+
+#         if extracted_text:
+#             # Summarize the extracted text
+#             summarized_text = model(extracted_text)
+
+#             # Print the summarized text to the console
+#             print("Summarized Text (BERT):")
+#             print(summarized_text)
+#             # fs = FileSystemStorage() 
+#             # fp = fs.save(uploaded_file.name, uploaded_file)
+#             q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
+#             q1.save()
+#             # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+#     # Pass both extracted text and summarized text to the template
+#     return render(request, 'user/user_home.html', {
+#         'user':user,
+#         'extracted_text': extracted_text,
+#         'summarized_text': summarized_text
+#     })
+
+
+
+# Assuming you have a model named File for saving the results
 
 # Make sure pytesseract points to the correct Tesseract executable (for Windows or other systems)
 # Example for Windows:
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def upload_img(request):

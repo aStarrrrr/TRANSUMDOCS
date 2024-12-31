@@ -83,6 +83,9 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -138,4 +141,16 @@ EMAIL_PORT = 587  # Standard SMTP port for TLS
 EMAIL_USE_TLS = True  # Use TLS for security
 EMAIL_HOST_USER = 'transumdocs@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'ihumdesxdpzghrmd'  # Your email password (you can use an App Password for Gmail)
-DEFAULT_FROM_EMAIL = 'transumdocs@gmail.com'  # Default from address
+# DEFAULT_FROM_EMAIL = 'transumdocs@gmail.com'  # Default from address
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# # Email Backend Configuration for SMTP
+# # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'  # Use the SMTP server for your email provider (e.g., Gmail, Outlook, etc.)
+# EMAIL_PORT = 587  # Standard SMTP port for TLS
+# EMAIL_USE_TLS = True  # Use TLS for security
+# EMAIL_HOST_USER = 'transumdocs@gmail.com'  # Your email address
+# EMAIL_HOST_PASSWORD = 'ihumdesxdpzghrmd'  # Your email password (you can use an App Password for Gmail)
+# DEFAULT_FROM_EMAIL = 'transumdocs@gmail.com'  # Default from address

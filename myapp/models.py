@@ -1,3 +1,5 @@
+
+
 from django.db import models
 
 # Create your models here.
@@ -27,6 +29,6 @@ class Complaint(models.Model):
 class File(models.Model):
     USER=models.ForeignKey(User,on_delete=models.CASCADE)
     date=models.DateField(auto_now=True)
-    file=models.CharField(max_length=10000)
-    output_summary=models.CharField(max_length=10000)
-    output_translated=models.CharField(max_length=10000)
+    file=models.TextField()
+    output_summary=models.TextField()
+    output_translated=models.TextField()

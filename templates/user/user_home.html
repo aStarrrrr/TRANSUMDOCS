@@ -1,6 +1,69 @@
 {% include 'user/user_header.html' %}
+<!-- 
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <center>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <br>
+                    <h1>Get your summaries</h1>
+                    <br>
+                    <h5>Upload your file</h5>
+                    <br>
+                    <br>
+                    <center>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <label style="color:white" for="pdf_file">Upload a PDF:</label>
+                            <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
+                            <button type="submit">Upload and Summarize</button>
+                        </form>
+                        <br>
+                        <br>
+                        {% if summarized_text %}
+                            <h2 style="color:white">Summary:</h2>
+                            <div style="position: relative; display: inline-block;">
+                                <pre id="summary-text">{{ summarized_text }}</pre>
+                                
+                                Copy
+                                <i id="copy-btn" class="fas fa-copy" 
+                                   style="position: relative; top: 0; cursor: pointer; color: white;" 
+                                   onclick="copyToClipboard()" 
+                                   title="Copy"></i>
+                            </div>
+                        {% else %}
+                            <h2 style="color:white">No summary available</h2>
+                        {% endif %}
 
-<center>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </center>
+
+    <script>
+        function copyToClipboard() {
+            // Get the summarized text
+            const summaryText = document.getElementById('summary-text').innerText;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body> -->
+
+<head>
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
     <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
             <div class="col-12">
@@ -9,50 +72,57 @@
                 <br>
                 <h5>Upload your file</h5>
                 <br>
-                <br>
-                <!-- <h3>PDF</h3>
-                    <br> -->
-                <!-- <form action="" method="post" enctype="multipart/form-data">
-                    <input type="file" name="input_file" required>
-                    <br>
-                    <input type="submit" value="UPLOAD" name="submit">
+
+
+
+
+
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- <label style="color:white" for="pdf_file">Upload a PDF:</label>
+                    <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required> -->
+                    <div class="mb-3">
+                        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required class="form-control bg-dark" type="file" multiple>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary m-2">Summarize</button>
                 </form>
                 <br>
                 <br>
-                <h3>IMAGE</h3>
-                    <br>
-                <form action="" method="post" enctype="multipart/form-data">
-                    <input type="file" name="input_file" required>
-                    <br>
-                    <input type="submit" value="UPLOAD" name="submit">
-                </form> -->
-                <center>
-                    <!-- <h1 style="color:white">Welcome, {{ user.username }}!</h1> -->
-                
-                    <!-- {% if extracted_text %}
-                        <h2 style="color:white">Extracted Text from PDF:</h2>
-                        <pre style="color:white">{{ extracted_text }}</pre>
-                    {% else %}
-                        <h2>No PDF uploaded yet</h2>
-                    {% endif %} -->
-                
-                    {% if summarized_text %}
-                        <h2 style="color:white">Summary:</h2>
-                        <pre>{{ summarized_text }}</pre>
-                    {% else %}
-                        <h2 style="color:white">No summary available</h2>
-                    {% endif %}
-                
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label style="color:white" for="pdf_file">Upload a PDF:</label>
-                        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
-                
-                
-                
-                        <button type="submit">Upload and Summarize</button>
-                    </form>
-                </center>
-                
+                {% if summarized_text %}
+                    <h2 style="color:white">Summary:</h2>
+                    <div id="summary-text" 
+                        style="text-align: justify; background: #f8f9fa; padding: 20px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6; color: black;">
+                        {{ summarized_text }}
+                    </div>
+                    <!-- Copy Icon -->
+                    <div style="margin-top: 10px;">
+                        <i id="copy-btn" class="fas fa-copy" 
+                        style="cursor: pointer; color: white; font-size: 20px;" 
+                        onclick="copyToClipboard()" 
+                        title="Copy"></i>
+                        <span style="color: white; margin-left: 5px;">Copy Summary</span>
+                    </div>
+                {% else %}
+                    <h2 style="color:white">No summary available</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            // Get the summarized text
+            const summaryText = document.getElementById('summary-text').innerText;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
 
 {% include 'user/user_footer.html' %}
