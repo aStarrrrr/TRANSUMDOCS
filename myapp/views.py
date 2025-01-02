@@ -468,58 +468,6 @@ def logout(request):
     return HttpResponse(f"<script>alert('Logged out');window.location='/login'</script>")
 
 
-
-# def user_home(request):
-#     userid = request.session['user_id']
-#     user=User.objects.get( id=userid)
-    
-#     extracted_text = None  # Variable to hold the extracted text
-#     summarized_text = None  # Variable to hold the summarized text
-
-#     if request.method == 'POST' and 'pdf_file' in request.FILES:
-#         # Get the uploaded PDF file
-#         uploaded_file = request.FILES['pdf_file']
-
-#         # Read the file into memory (using BytesIO)
-#         pdf_path = BytesIO(uploaded_file.read())
-
-#         # Create a PdfReader object from the file object
-#         reader = PdfReader(pdf_path)
-
-#         # Extract text from all pages
-#         extracted_text = ""
-#         for page_number in range(len(reader.pages)):
-#             page = reader.pages[page_number]
-#             text = page.extract_text()
-#             extracted_text += text
-
-#         # Print the extracted text to the console
-#         print("Extracted Text:/")
-#         # print(extracted_text)
-#         # Summarize using BERT (Extractive Summarizer)
-#         model = Summarizer()  # Load the BERT extractive summarizer model
-
-#         if extracted_text:
-#             # Summarize the extracted text
-#             summarized_text = model(extracted_text)
-
-#             # Print the summarized text to the console
-#             print("Summarized Text (BERT):")
-#             print(summarized_text)
-#             # fs = FileSystemStorage() 
-#             # fp = fs.save(uploaded_file.name, uploaded_file)
-#             q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
-#             q1.save()
-#             # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-#     # Pass both extracted text and summarized text to the template
-#     return render(request, 'user/user_home.html', {
-#         'user':user,
-#         'extracted_text': extracted_text,
-#         'summarized_text': summarized_text
-#     })
-
-
 from io import BytesIO
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
