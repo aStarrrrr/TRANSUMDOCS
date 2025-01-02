@@ -13,7 +13,7 @@ class User(models.Model):
     first_name=models.CharField(max_length=100)
     last_name=models.CharField(max_length=100)
     email=models.CharField(max_length=100)
-    phone=models.CharField(max_length=100)
+    # phone=models.CharField(max_length=100)
 
 class Feedback(models.Model):
     USER=models.ForeignKey(User,on_delete=models.CASCADE)

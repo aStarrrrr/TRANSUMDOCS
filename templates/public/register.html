@@ -159,10 +159,10 @@ https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
                             <input type="email" name="email" class="form-control" id="floatingInput" required>
                             <label for="floatingInput">Email address</label>
                         </div>
-                        <div class="form-floating mb-3">
+                        <!-- <div class="form-floating mb-3">
                             <input type="number" name="phone" class="form-control" id="floatingInput" required>
                             <label for="floatingInput">Phone</label>
-                        </div>
+                        </div> -->
                         <button type="submit" name="submit" class="btn btn-primary py-3 w-100 mb-4">Sign Up</button>
                         <p class="text-center mb-0">Already have an Account? <a href="/login">Sign In</a></p>
                     </div>
@@ -205,13 +205,13 @@ https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
 
         });
        
-        $("input[name='phone']").on('input', function(e) {
-            let value = $(this).val().replace(/[^0-9]/g, '');
-            if (value.length > 10) {
-                value = value.slice(0, 10); // Limit to 10 digits
-            }
-            $(this).val(value);
-        });
+        // $("input[name='phone']").on('input', function(e) {
+        //     let value = $(this).val().replace(/[^0-9]/g, '');
+        //     if (value.length > 10) {
+        //         value = value.slice(0, 10); // Limit to 10 digits
+        //     }
+        //     $(this).val(value);
+        // });
         
         $("input[name='username']").on('input', function(e) {
             $(this).val($(this).val().replace(/[^A-Za-z ]/g, ''));

@@ -156,7 +156,6 @@ def register(request):
         first_name = request.POST['fname']
         last_name = request.POST['lname']
         email1 = request.POST['email']
-        phone = request.POST['phone']
 
         # Save data in session for later use
         request.session["username"] = username
@@ -164,7 +163,6 @@ def register(request):
         request.session["fname"] = first_name
         request.session["lname"] = last_name
         request.session["email"] = email1
-        request.session["phone"] = phone
 
 
         subject = 'Your College Code'
@@ -211,11 +209,10 @@ def otp_for_registration_post(request):
         first_name=request.session["fname"]
         last_name=request.session["lname"]
         email1=request.session["email"]
-        phone=request.session["phone"]
         q1 = Login(username=username, password=password, user_type='user')
         q1.save()
 
-        q2 = User(first_name=first_name, last_name=last_name, email=email1, phone=phone, LOGIN_id=q1.pk)
+        q2 = User(first_name=first_name, last_name=last_name, email=email1, LOGIN_id=q1.pk)
         q2.save()
         return HttpResponse("<script>alert('Verification successful');window.location='/login';</script>")
     else:
@@ -474,68 +471,9 @@ from django.core.files.storage import FileSystemStorage
 from PyPDF2 import PdfReader  # Alternatively, use fitz (PyMuPDF) or pdfplumber for better extraction
 from summarizer import Summarizer  # Extractive summarizer
 
-def user_home(request):
-    userid = request.session['user_id']
-    user = User.objects.get(id=userid)
-    
-    extracted_text = None  # Variable to hold the extracted text
-    summarized_text = None  # Variable to hold the summarized text
-
-    if request.method == 'POST' and 'pdf_file' in request.FILES:
-        # Get the uploaded PDF file
-        uploaded_file = request.FILES['pdf_file']
-
-        try:
-            # Read the file into memory (using BytesIO)
-            pdf_path = BytesIO(uploaded_file.read())
-
-            # Create a PdfReader object from the file object
-            reader = PdfReader(pdf_path)
-
-            # Extract text from all pages
-            extracted_text = ""
-            for page_number in range(len(reader.pages)):
-                page = reader.pages[page_number]
-                text = page.extract_text()
-                extracted_text += text.strip() + "\n"
-
-            # Summarize using BERT (Extractive Summarizer)
-            model = Summarizer()  # Load the BERT extractive summarizer model
-
-            if extracted_text:
-                # Summarize the extracted text
-                summarized_text = model(extracted_text, min_length=50, max_length=500)
-
-                # Save file and summary to the database
-                q1 = File(USER_id=userid, file=uploaded_file, output_summary=summarized_text, output_translated='pending')
-                q1.save()
-
-        except Exception as e:
-            print(f"Error processing the PDF: {e}")
-            return render(request, 'user/user_home.html', {
-                'user': user,
-                'error': "There was an issue processing your PDF file. Please try again."
-            })
-
-    # Pass both extracted text and summarized text to the template
-    return render(request, 'user/user_home.html', {
-        'user': user,
-        'extracted_text': extracted_text,
-        'summarized_text': summarized_text
-    })
-
-
-
-
-
-
-
-
-
-
 # def user_home(request):
 #     userid = request.session['user_id']
-#     user=User.objects.get( id=userid)
+#     user = User.objects.get(id=userid)
     
 #     extracted_text = None  # Variable to hold the extracted text
 #     summarized_text = None  # Variable to hold the summarized text
@@ -544,99 +482,154 @@ def user_home(request):
 #         # Get the uploaded PDF file
 #         uploaded_file = request.FILES['pdf_file']
 
-#         # Read the file into memory (using BytesIO)
-#         pdf_path = BytesIO(uploaded_file.read())
+#         try:
+#             # Read the file into memory (using BytesIO)
+#             pdf_path = BytesIO(uploaded_file.read())
 
-#         # Create a PdfReader object from the file object
-#         reader = PdfReader(pdf_path)
+#             # Create a PdfReader object from the file object
+#             reader = PdfReader(pdf_path)
 
-#         # Extract text from all pages
-#         extracted_text = ""
-#         for page_number in range(len(reader.pages)):
-#             page = reader.pages[page_number]
-#             text = page.extract_text()
-#             extracted_text += text
+#             # Extract text from all pages
+#             extracted_text = ""
+#             for page_number in range(len(reader.pages)):
+#                 page = reader.pages[page_number]
+#                 text = page.extract_text()
+#                 extracted_text += text.strip() + "\n"
 
-#         # Print the extracted text to the console
-#         print("Extracted Text:/")
-#         # print(extracted_text)
+#             # Summarize using BERT (Extractive Summarizer)
+#             model = Summarizer()  # Load the BERT extractive summarizer model
 
-#         # Summarize using BERT (Extractive Summarizer)
-#         model = Summarizer()  
+#             if extracted_text:
+#                 # Summarize the extracted text
+#                 summarized_text = model(extracted_text, min_length=50, max_length=500)
 
-#         if extracted_text:
-#             # Summarize the extracted text
-#             summarized_text = model(extracted_text)
+#                 # Save file and summary to the database
+#                 q1 = File(USER_id=userid, file=uploaded_file, output_summary=summarized_text, output_translated='pending')
+#                 q1.save()
 
-#             # Print the summarized text to the console
-#             print("Summarized Text (BERT):")
-#             print(summarized_text)
-#             # fs = FileSystemStorage() 
-#             # fp = fs.save(uploaded_file.name, uploaded_file)
-#             q1 = File(USER_id=userid,file=uploaded_file,output_summary=summarized_text,output_translated='pending')
-#             q1.save()
-#             # ALTER TABLE your_table_name MODIFY output_summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+#         except Exception as e:
+#             print(f"Error processing the PDF: {e}")
+#             return render(request, 'user/user_home.html', {
+#                 'user': user,
+#                 'error': "There was an issue processing your PDF file. Please try again."
+#             })
 
 #     # Pass both extracted text and summarized text to the template
 #     return render(request, 'user/user_home.html', {
-#         'user':user,
+#         'user': user,
 #         'extracted_text': extracted_text,
 #         'summarized_text': summarized_text
 #     })
 
 
 
-# Assuming you have a model named File for saving the results
 
-# Make sure pytesseract points to the correct Tesseract executable (for Windows or other systems)
-# Example for Windows:
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 
 
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-def upload_img(request):
+# def upload_img(request):
+#     userid = request.session['user_id']
+#     user = User.objects.get(id=userid)
+
+#     extracted_text = None  # Variable to hold the extracted text from the image
+#     summarized_text = None  # Variable to hold the summarized text
+
+#     if request.method == 'POST':
+#         if 'image_file' in request.FILES:
+#             # Handle image file (e.g., JPG, PNG)
+#             uploaded_image = request.FILES['image_file']
+
+#             # Read the image file into memory (using BytesIO)
+#             image_path = BytesIO(uploaded_image.read())
+
+#             # Use Pillow to open the image
+#             image = Image.open(image_path)
+
+#             # Extract text from the image using pytesseract
+#             extracted_text = pytesseract.image_to_string(image)
+
+#             print("Extracted Text from Image:")
+#             print(extracted_text)
+
+            
+#             model = Summarizer()  
+
+#             if extracted_text:
+#                 summarized_text = model(extracted_text)
+#                 print("Summarized Text from Image:")
+#                 print(summarized_text)
+
+#                 # Save the summarized text and the file to the database (optional)
+#                 fs = FileSystemStorage()
+#                 fp = fs.save(uploaded_image.name, uploaded_image)
+#                 q1 = File(USER_id=userid, file=fs.url(fp), output_summary=summarized_text, output_translated='pending')
+#                 q1.save()
+
+#     # Pass the extracted text and summarized text to the template
+#     return render(request, 'user/upload_img.html',{
+#         'user': user,
+#         'extracted_text': extracted_text,
+#         'summarized_text': summarized_text }
+#     )
+
+
+
+
+
+
+def process_file(request):
     userid = request.session['user_id']
     user = User.objects.get(id=userid)
 
-    extracted_text = None  # Variable to hold the extracted text from the image
-    summarized_text = None  # Variable to hold the summarized text
+    summarized_text = None
+    extracted_text = None
 
-    if request.method == 'POST':
-        if 'image_file' in request.FILES:
-            # Handle image file (e.g., JPG, PNG)
-            uploaded_image = request.FILES['image_file']
+    if request.method == 'POST' and 'input_file' in request.FILES:
+        uploaded_file = request.FILES['input_file']
+        file_type = uploaded_file.content_type
 
-            # Read the image file into memory (using BytesIO)
-            image_path = BytesIO(uploaded_image.read())
+        try:
+            if file_type.startswith('image/'):  # Check if it's an image file
+                # Image processing logic
+                image_path = BytesIO(uploaded_file.read())
+                image = Image.open(image_path)
+                extracted_text = pytesseract.image_to_string(image)
 
-            # Use Pillow to open the image
-            image = Image.open(image_path)
+                model = Summarizer()
+                if extracted_text:
+                    summarized_text = model(extracted_text)
 
-            # Extract text from the image using pytesseract
-            extracted_text = pytesseract.image_to_string(image)
+            elif file_type == 'application/pdf':  # Check if it's a PDF file
+                # PDF processing logic
+                pdf_path = BytesIO(uploaded_file.read())
+                reader = PdfReader(pdf_path)
 
-            print("Extracted Text from Image:")
-            print(extracted_text)
+                extracted_text = ""
+                for page in reader.pages:
+                    extracted_text += page.extract_text().strip() + "\n"
 
-            
-            model = Summarizer()  
+                model = Summarizer()
+                if extracted_text:
+                    summarized_text = model(extracted_text, min_length=50, max_length=500)
 
-            if extracted_text:
-                summarized_text = model(extracted_text)
-                print("Summarized Text from Image:")
-                print(summarized_text)
+            # Save the file and summary to the database
+            fs = FileSystemStorage()
+            file_path = fs.save(uploaded_file.name, uploaded_file)
+            q1 = File(USER_id=userid, file=fs.url(file_path), output_summary=summarized_text, output_translated='pending')
+            q1.save()
 
-                # Save the summarized text and the file to the database (optional)
-                fs = FileSystemStorage()
-                fp = fs.save(uploaded_image.name, uploaded_image)
-                q1 = File(USER_id=userid, file=fs.url(fp), output_summary=summarized_text, output_translated='pending')
-                q1.save()
+        except Exception as e:
+            print(f"Error processing file: {e}")
+            return render(request, 'user/user_home.html', {
+                'user': user,
+                'error': "There was an issue processing your file. Please try again."
+            })
 
-    # Pass the extracted text and summarized text to the template
-    return render(request, 'user/upload_img.html',{
+    return render(request, 'user/user_home.html', {
         'user': user,
         'extracted_text': extracted_text,
-        'summarized_text': summarized_text }
-    )
+        'summarized_text': summarized_text
+    })

@@ -59,8 +59,7 @@
     </script>
 </body> -->
 
-<head>
-    <!-- Include Font Awesome -->
+<!-- <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -74,8 +73,6 @@
                 <br>
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <!-- <label style="color:white" for="pdf_file">Upload a PDF:</label>
-                    <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required> -->
                     <div class="mb-3">
                         <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required class="form-control bg-dark" type="file" multiple>
                     </div>
@@ -89,7 +86,6 @@
                         style="text-align: justify; background: #f8f9fa; padding: 20px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6; color: black;">
                         {{ summarized_text }}
                     </div>
-                    <!-- Copy Icon -->
                     <div style="margin-top: 10px;">
                         <i id="copy-btn" class="fas fa-copy" 
                         style="cursor: pointer; color: white; font-size: 20px;" 
@@ -117,6 +113,429 @@
             });
         }
     </script>
+</body> -->
+
+
+
+
+
+
+
+<!-- 
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-12">
+                <br>
+                <h1>Get your summaries</h1>
+                <br>
+                <h5>Upload your file</h5>
+                <br>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="file" name="input_file" id="input_file" accept="application/pdf, image/*" required class="form-control bg-dark">
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary m-2">Summarize</button>
+                </form>
+                <br>
+                <br>
+                {% if summarized_text %}
+                    <h2 style="color:white">Summary:</h2>
+                    <div id="summary-text" 
+                        style="text-align: justify; background: #f8f9fa; padding: 20px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6; color: black;">
+                        {{ summarized_text }}
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <i id="copy-btn" class="fas fa-copy" 
+                        style="cursor: pointer; color: white; font-size: 20px;" 
+                        onclick="copyToClipboard()" 
+                        title="Copy"></i>
+                        <span style="color: white; margin-left: 5px;">Copy Summary</span>
+                    </div>
+                {% else %}
+                    <h2 style="color:white">No summary available</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const summaryText = document.getElementById('summary-text').innerText;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+    </script>
 </body>
+ -->
+
+
+
+
+
+ <!-- <head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #282c34;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .content-box {
+            background: #800000;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ffcccc;
+            margin-bottom: 20px;
+        }
+
+        h5 {
+            color: #ff9999;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            background-color: #b30000;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 5px #ff9999;
+        }
+
+        .btn {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ff6666;
+        }
+
+        #summary-text {
+            text-align: justify;
+            background: #ffe6e6;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #800000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .copy-section {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .copy-section i {
+            cursor: pointer;
+            color: #ffcccc;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+
+        .copy-section span {
+            color: #ff9999;
+        }
+
+        @media (max-width: 768px) {
+            .content-box {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="content-box">
+            <h1>Get your summaries</h1>
+            <h5>Upload your file</h5>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="input_file" class="form-label">Choose a file (Image or PDF):</label>
+                    <input type="file" name="input_file" id="input_file" accept="application/pdf, image/*" required class="form-control">
+                </div>
+                <button type="submit" class="btn">Upload and Summarize</button>
+            </form>
+            <br>
+            {% if summarized_text %}
+                <h2 style="color: #ffcccc;">Summary:</h2>
+                <div id="summary-text">
+                    {{ summarized_text }}
+                </div>
+                <div class="copy-section">
+                    <i id="copy-btn" class="fas fa-copy" onclick="copyToClipboard()" title="Copy"></i>
+                    <span>Copy Summary</span>
+                </div>
+            {% else %}
+                <h2 style="color: #ffcccc;">No summary available</h2>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const summaryText = document.getElementById('summary-text').innerText;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body> -->
+
+ 
+
+
+
+
+<head>
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #282c34;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .content-box {
+            background: #191C24;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ffcccc;
+            margin-bottom: 20px;
+        }
+
+        h5 {
+            color: #ff9999;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            background-color: #b30000;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 5px #ff9999;
+        }
+
+        .btn {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ff6666;
+        }
+
+        #summary-text {
+            text-align: justify;
+            background: #000;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #fff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .copy-section {
+            margin-top: 10px;
+            margin-left: 4px;
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+        }
+
+        .copy-section i {
+            cursor: pointer;
+            color: #ffcccc;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+
+        .copy-section span {
+            color: #ff9999;
+        }
+
+        @media (max-width: 768px) {
+            .content-box {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="content-box">
+            <h1>Get your summaries</h1>
+            <h5>Upload your file</h5>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <!-- <label for="input_file" class="form-label">Choose a file (Image or PDF):</label> -->
+                    <input type="file" name="input_file" id="input_file" accept="application/pdf, image/*" required class="form-control">
+                </div>
+                <button type="submit" class="btn">Summarize</button>
+            </form>
+            <br>
+            {% if summarized_text %}
+                <h4 style="color: #ffcccc;">Summary:</h4>
+                <div id="summary-text"></div>
+                <div class="copy-section">
+                    <i id="copy-btn" class="fas fa-copy" onclick="copyToClipboard()" title="Copy"></i>
+                    <span>Copy</span>
+                </div>
+            {% else %}
+                <h5 style="color: #ffcccc;">- No summary available -</h5>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const summarizedText = `{{ summarized_text|escapejs }}`;
+        const summaryElement = document.getElementById('summary-text');
+
+        // function typeWriterEffect(text, element) {
+        //     let i = 0;
+        //     const speed = 50; // typing speed in milliseconds
+
+        //     function type() {
+        //         if (i < text.length) {
+        //             element.innerHTML += text.charAt(i);
+        //             i++;
+        //             setTimeout(type, speed);
+        //         }
+        //     }
+
+        //     type();
+        // }
+
+        if (summarizedText) {
+            typeWriterEffect(summarizedText, summaryElement);
+        }
+
+        function typeWriterEffect(text, element) {
+            let i = 0;
+            const speed = 50; // Typing speed in milliseconds
+            text = text.replace(/\s+/g, ' ').trim(); // Remove extra spaces
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Ensure final text is justified after completion
+                    element.style.textAlign = "justify";
+                }
+            }
+
+            type();
+        }
+
+
+        function copyToClipboard() {
+            const summaryText = document.getElementById('summary-text').innerText;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
+
+
+
+
+
 
 {% include 'user/user_footer.html' %}
