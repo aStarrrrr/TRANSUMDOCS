@@ -580,6 +580,61 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 
 
 
+# def process_file(request):
+#     userid = request.session['user_id']
+#     user = User.objects.get(id=userid)
+
+#     summarized_text = None
+#     extracted_text = None
+
+#     if request.method == 'POST' and 'input_file' in request.FILES:
+#         uploaded_file = request.FILES['input_file']
+#         file_type = uploaded_file.content_type
+
+#         try:
+#             if file_type.startswith('image/'):  # Check if it's an image file
+#                 # Image processing logic
+#                 image_path = BytesIO(uploaded_file.read())
+#                 image = Image.open(image_path)
+#                 extracted_text = pytesseract.image_to_string(image)
+
+#                 model = Summarizer()
+#                 if extracted_text:
+#                     summarized_text = model(extracted_text)
+
+#             elif file_type == 'application/pdf':  # Check if it's a PDF file
+#                 # PDF processing logic
+#                 pdf_path = BytesIO(uploaded_file.read())
+#                 reader = PdfReader(pdf_path)
+
+#                 extracted_text = ""
+#                 for page in reader.pages:
+#                     extracted_text += page.extract_text().strip() + "\n"
+
+#                 model = Summarizer()
+#                 if extracted_text:
+#                     summarized_text = model(extracted_text, min_length=50, max_length=500)
+
+#             # Save the file and summary to the database
+#             fs = FileSystemStorage()
+#             file_path = fs.save(uploaded_file.name, uploaded_file)
+#             q1 = File(USER_id=userid, file=fs.url(file_path), output_summary=summarized_text, output_translated='pending')
+#             q1.save()
+
+#         except Exception as e:
+#             print(f"Error processing file: {e}")
+#             return render(request, 'user/user_home.html', {
+#                 'user': user,
+#                 'error': "There was an issue processing your file. Please try again."
+#             })
+
+#     return render(request, 'user/user_home.html', {
+#         'user': user,
+#         'extracted_text': extracted_text,
+#         'summarized_text': summarized_text
+#     })
+
+
 def process_file(request):
     userid = request.session['user_id']
     user = User.objects.get(id=userid)
@@ -618,6 +673,10 @@ def process_file(request):
             # Save the file and summary to the database
             fs = FileSystemStorage()
             file_path = fs.save(uploaded_file.name, uploaded_file)
+
+            # Save the file URL in the session
+            request.session['uploaded_file_url'] = fs.url(file_path)
+            
             q1 = File(USER_id=userid, file=fs.url(file_path), output_summary=summarized_text, output_translated='pending')
             q1.save()
 
@@ -628,8 +687,12 @@ def process_file(request):
                 'error': "There was an issue processing your file. Please try again."
             })
 
+    # Retrieve the file URL from the session if available
+    uploaded_file_url = request.session.get('uploaded_file_url')
+
     return render(request, 'user/user_home.html', {
         'user': user,
         'extracted_text': extracted_text,
-        'summarized_text': summarized_text
+        'summarized_text': summarized_text,
+        'uploaded_file_url': uploaded_file_url
     })

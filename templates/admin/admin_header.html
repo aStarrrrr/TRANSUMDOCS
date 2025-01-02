@@ -42,6 +42,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="/static/css/style.css" rel="stylesheet">
@@ -61,8 +62,8 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="/user_home" class="navbar-brand mx-4 mb-3">
-                    <h4 class="text-primary"><i class="fa fa-user-edit me-2"></i>TRANSUMDOCS</h4>
+                <a href="/admin_home" class="navbar-brand mx-4 mb-3">
+                    <h4 class="text-primary"><i class="fa-brands fa-slack"></i></i> TRANSUMDOCS</h4>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -80,9 +81,9 @@
                 <a href="/user_files">Files</a>
                 <a href="/user_history">History</a> -->
                 <div class="navbar-nav w-100">
-                    <a href="/admin_manage_user" class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>Manage Users</a>
-                    <a href="/admin_view_feedbacks" class="nav-item nav-link"><i class="fa fa-th me-2"></i>View feedbacks</a>
-                    <a href="/admin_view_complaints" class="nav-item nav-link"><i class="fa fa-th me-2"></i>View complaints</a>
+                    <a href="/admin_manage_user" class="nav-item nav-link "><i class="fa-solid fa-users"></i> Manage Users</a>
+                    <a href="/admin_view_feedbacks" class="nav-item nav-link"><i class="fa-regular fa-message"></i> View feedbacks</a>
+                    <a href="/admin_view_complaints" class="nav-item nav-link"><i class="fa-regular fa-message"></i> View complaints</a>
                     <!-- <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>More</a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -175,7 +176,8 @@
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <!-- <img class="rounded-circle me-lg-2" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;"> -->
+                            <i class="fa-regular fa-user"></i>
                             <span class="d-none d-lg-inline-flex">Admin</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
