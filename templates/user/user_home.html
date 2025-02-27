@@ -78,6 +78,18 @@
             overflow-y: auto;
         }
 
+        #translated-summary{
+            text-align: justify;
+            background: #000;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #fff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         .copy-section {
             margin-top: 10px;
             margin-left: 4px;
@@ -101,6 +113,19 @@
             margin-left: 20px; /* Adjust spacing as needed */
         }
 
+        .language-select select {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #file-viewer{
+            margin-top: 20px;
+        }
+
         @media (max-width: 768px) {
             .content-box {
                 width: 90%;
@@ -117,6 +142,7 @@
             }
         }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -143,11 +169,92 @@
                     <i class="fa-solid fa-expand" onclick="viewUploadedFile('/static/media/{{ uploaded_file_url }}')" title="View File"></i>
                     <span>View file</span>
                     <span class="spacer"></span>
-                    <i class="fa-solid fa-language"></i>
-                    <span>Translate</span>
+                    <!-- <span>Translate</span> -->
+                    <div id="downloadBtn" style="cursor: pointer; display: flex; align-items: center;">
+                        <i class="fa-regular fa-circle-down"></i>
+                        <span style="margin-left: 5px;">Download</span>
+                    </div>
                 </div>
-                <br>
                 <div id="file-viewer"></div>
+                <br>
+                <div class="language-select">
+                    <label for="language">Select Language:</label>
+                    <select id="language" class="language-select" style="width: 300px;">
+                        <option value="af">Afrikaans</option>
+                        <option value="sq">Albanian</option>
+                        <option value="am">Amharic</option>
+                        <option value="ar">Arabic</option>
+                        <option value="hy">Armenian</option>
+                        <option value="az">Azerbaijani</option>
+                        <option value="eu">Basque</option>
+                        <option value="be">Belarusian</option>
+                        <option value="bn">Bengali</option>
+                        <option value="bs">Bosnian</option>
+                        <option value="bg">Bulgarian</option>
+                        <option value="ca">Catalan</option>
+                        <option value="ceb">Cebuano</option>
+                        <option value="zh-CN">Chinese (Simplified)</option>
+                        <option value="zh-TW">Chinese (Traditional)</option>
+                        <option value="co">Corsican</option>
+                        <option value="hr">Croatian</option>
+                        <option value="cs">Czech</option>
+                        <option value="da">Danish</option>
+                        <option value="nl">Dutch</option>
+                        <option value="en">English</option>
+                        <option value="eo">Esperanto</option>
+                        <option value="et">Estonian</option>
+                        <option value="fi">Finnish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="el">Greek</option>
+                        <option value="gu">Gujarati</option>
+                        <option value="hi">Hindi</option>
+                        <option value="hu">Hungarian</option>
+                        <option value="is">Icelandic</option>
+                        <option value="id">Indonesian</option>
+                        <option value="it">Italian</option>
+                        <option value="ja">Japanese</option>
+                        <option value="kn">Kannada</option>
+                        <option value="ko">Korean</option>
+                        <option value="ml">Malayalam</option>
+                        <option value="mr">Marathi</option>
+                        <option value="ne">Nepali</option>
+                        <option value="no">Norwegian</option>
+                        <option value="pa">Punjabi</option>
+                        <option value="pl">Polish</option>
+                        <option value="pt">Portuguese</option>
+                        <option value="ru">Russian</option>
+                        <option value="si">Sinhala</option>
+                        <option value="es">Spanish</option>
+                        <option value="sv">Swedish</option>
+                        <option value="ta">Tamil</option>
+                        <option value="te">Telugu</option>
+                        <option value="th">Thai</option>
+                        <option value="tr">Turkish</option>
+                        <option value="uk">Ukrainian</option>
+                        <option value="ur">Urdu</option>
+                        <option value="vi">Vietnamese</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                    <button class="btn" onclick="translateSummary()"><i class="fa-solid fa-language"></i> Translate</button>
+                </div>
+                <h4 style="color: #EB1616; margin-top: 20px;">Translated Summary:</h4>
+                <div id="translated-summary">- Translation will appear here -</div>
+                <div class="copy-section">
+                    <i id="copy-btn" class="fas fa-copy" onclick="copyToClipboard()" title="Copy"></i>
+                    <span>Copy</span>
+                    <span class="spacer"></span>
+                    <!-- <i class="fa-solid fa-expand" onclick="viewUploadedFile('/static/media/{{uploaded_file_url.file}}')" title="View File"></i> -->
+                    <!-- <i class="fa-solid fa-expand" onclick="viewUploadedFile('/static/media/{{ uploaded_file_url }}')" title="View File"></i>
+                    <span>View file</span> -->
+                    <!-- <span class="spacer"></span> -->
+                    <!-- <span>Translate</span> -->
+                    <div id="downloadBtn" style="cursor: pointer; display: flex; align-items: center;">
+                        <i class="fa-regular fa-circle-down"></i>
+                        <span style="margin-left: 5px;">Download</span>
+                    </div>
+                </div>
+                <span class="spacer"></span>
             {% else %}
                 <h5 style="color: #ffcccc;">- No summary available -</h5>
             {% endif %}
@@ -191,7 +298,7 @@ function viewUploadedFile(fileUrl) {
 
         function typeWriterEffect(text, element) {
             let i = 0;
-            const speed = 50; // Typing speed in milliseconds
+            const speed = 20; // Typing speed in milliseconds
             text = text.replace(/\s+/g, ' ').trim(); // Remove extra spaces
 
             function type() {
@@ -236,6 +343,45 @@ function viewUploadedFile(fileUrl) {
             fileViewer.appendChild(iframe);
         }
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.language-select').select2({
+                placeholder: "Select a language",
+                allowClear: true
+            });
+        });
+    </script>
+    <script>
+        function downloadSummary() {
+            // Get the summarized text (replace this with actual summary)
+            let summary = document.getElementById("summary-text").innerText; 
+            
+            if (!summary.trim()) {
+                alert("No summary available to download!");
+                return;
+            }
+    
+            // Create a Blob object
+            let blob = new Blob([summary], { type: "text/plain" });
+    
+            // Create a temporary anchor element
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "summary.txt"; // File name
+    
+            // Trigger the download
+            document.body.appendChild(a);
+            a.click();
+    
+            // Clean up
+            document.body.removeChild(a);
+        }
+    
+        // Attach event listener to the div (instead of <i>)
+        document.getElementById("downloadBtn").addEventListener("click", downloadSummary);
+    </script>      
 </body>
 
 {% include 'user/user_footer.html' %}

@@ -32,6 +32,13 @@ from django.shortcuts import render
 from pathlib import Path
 # import fitz 
 
+
+
+
+
+
+
+
 def login(request):
     request.session['log']="out"
     if 'submit' in request.POST:
@@ -165,8 +172,8 @@ def register(request):
         request.session["email"] = email1
 
 
-        subject = 'Your College Code'
-        message = f'Your College code is: {otp}'
+        subject = 'Code for TransumDocs'
+        message = f'Otp : {otp}'
         recipient_list = [email1]  # Assuming 'email' is the field storing the college's email
 
         send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
@@ -635,6 +642,29 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 #     })
 
 
+
+
+
+
+
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
 def process_file(request):
     userid = request.session['user_id']
     user = User.objects.get(id=userid)
@@ -655,7 +685,7 @@ def process_file(request):
 
                 model = Summarizer()
                 if extracted_text:
-                    summarized_text = model(extracted_text)
+                    summarized_text = model(extracted_text, min_length=100)
 
             elif file_type == 'application/pdf':  # Check if it's a PDF file
                 # PDF processing logic
@@ -696,3 +726,100 @@ def process_file(request):
         'summarized_text': summarized_text,
         'uploaded_file_url': uploaded_file_url
     })
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+# def process_file(request):
+#     from io import BytesIO
+#     from django.core.files.storage import FileSystemStorage
+#     from PyPDF2 import PdfReader
+#     from PIL import Image
+#     from transformers import pipeline
+#     import pytesseract
+#     import logging
+
+#     # Configure logging
+#     logging.basicConfig(level=logging.INFO)
+
+#     # Specify the path to the Tesseract executable
+#     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+#     userid = request.session['user_id']
+#     user = User.objects.get(id=userid)
+
+#     summarized_text = None
+#     extracted_text = None
+
+#     if request.method == 'POST' and 'input_file' in request.FILES:
+#         uploaded_file = request.FILES['input_file']
+#         file_type = uploaded_file.content_type
+
+#         try:
+#             logging.info("Starting file processing...")
+#             # File storage initialization
+#             fs = FileSystemStorage()
+#             file_path = fs.save(uploaded_file.name, uploaded_file)
+#             request.session['uploaded_file_url'] = fs.url(file_path)
+
+#             if file_type.startswith('image/'):  # Check if it's an image file
+#                 logging.info("Processing an image file...")
+#                 image_path = BytesIO(uploaded_file.read())
+#                 image = Image.open(image_path)
+#                 extracted_text = pytesseract.image_to_string(image)
+
+#             elif file_type == 'application/pdf':  # Check if it's a PDF file
+#                 logging.info("Processing a PDF file...")
+#                 pdf_path = BytesIO(uploaded_file.read())
+#                 reader = PdfReader(pdf_path)
+
+#                 # Process PDF in chunks (page-by-page)
+#                 extracted_text = ""
+#                 for page_num, page in enumerate(reader.pages):
+#                     if page_num % 10 == 0:
+#                         logging.info(f"Processing page {page_num + 1}...")
+#                     extracted_text += page.extract_text().strip() + "\n"
+
+#             # Summarize text if extraction was successful
+#             if extracted_text:
+#                 logging.info("Starting text summarization...")
+#                 model = pipeline("summarization")
+#                 chunk_size = 1000  # Characters
+#                 chunks = [extracted_text[i:i + chunk_size] for i in range(0, len(extracted_text), chunk_size)]
+
+#                 summarized_text = ""
+#                 for chunk in chunks:
+#                     summarized_text += model(chunk, min_length=50, max_length=500)[0]['summary_text'] + "\n"
+
+#             # Save file and summary to the database
+#             q1 = File(USER_id=userid, file=fs.url(file_path), output_summary=summarized_text, output_translated='pending')
+#             q1.save()
+
+#         except Exception as e:
+#             logging.error(f"Error processing file: {e}")
+#             return render(request, 'user/user_home.html', {
+#                 'user': user,
+#                 'error': "There was an issue processing your file. Please try again."
+#             })
+
+#     # Retrieve the file URL from the session if available
+#     uploaded_file_url = request.session.get('uploaded_file_url')
+
+#     return render(request, 'user/user_home.html', {
+#         'user': user,
+#         'extracted_text': extracted_text,
+#         'summarized_text': summarized_text,
+#         'uploaded_file_url': uploaded_file_url
+#     })
