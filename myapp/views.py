@@ -32,12 +32,7 @@ from django.shortcuts import render
 from pathlib import Path
 # import fitz 
 
-
-
-
-
-
-
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def login(request):
     request.session['log']="out"
@@ -75,81 +70,6 @@ def login(request):
 def dd(request):
     return render(request,"public/login.html")
 
-# def register(request):
-#     if request.method == 'POST' and 'submit' in request.POST:
-#         # Generate a random OTP
-#         otp = random.randint(1000, 9999)
-#         request.session['otp'] = str(otp)  # Save OTP in session
-#         print(otp,"oooooootttttttttpppppppppp")
-#         # Retrieve form data
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         first_name = request.POST['fname']
-#         last_name = request.POST['lname']
-#         email1 = request.POST['email']
-#         phone = request.POST['phone']
-
-#         request.session["username"]=username
-#         request.session["password"]=password
-#         request.session["fname"]=first_name
-#         request.session["lname"]=last_name
-#         request.session["email"]=email1
-#         request.session["phone"]=phone
-
-#         # Save the user and login details
-       
-#         # Prepare and send email
-#         # subject = 'Your OTP for Registration'
-#         # message = f"""
-#         # Thank you for registering!
-        
-#         # Please use the following OTP to verify your account:
-#         # - OTP: {otp}
-#         # """
-#         # from_email = settings.EMAIL_HOST_USER
-#         # recipient_list = [email1]
-#         # print(recipient_list,"-----------------------------------------")
-
-#         # try:
-#         #     send_mail(subject, message, from_email, recipient_list)
-#         # except Exception as e:
-#         #     return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/register';</script>")
-
-#         # return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
-
-
-#         from django.core.mail import send_mail
-#     from django.conf import settings
-
-#     subject = 'Test Email'
-#     message = f"""
-#     This is a test email from Django.
-
-#     Here are the details:
-#     - Username: {otp}
-   
-#     """    
-#     from_email = settings.EMAIL_HOST_USER
-#     recipient_list = [email1]
-
-#     try:
-#         send_mail(subject, message, from_email, recipient_list)
-#         return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
-#     except Exception as e:
-#         return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/register';</script>")
-
-
-#         # Success message
-
-
-
-
-
-#     return render(request, 'public/register.html')
-
-
-
-
 def register(request):
     if request.method == 'POST' and 'submit' in request.POST:
         # Generate a random OTP
@@ -180,27 +100,7 @@ def register(request):
 
         return HttpResponse(""" <script> alert('Code Generated and emailed');window.location='/otp_for_registration'</script>""")
 
-
-        # # Prepare and send email
-        # subject = 'Test Email'
-        # message = f"""
-        # This is a test email from Django.
-
-        # Here are the details:
-        # - Username: {username}
-        # - OTP: {otp}
-        # """
-        # from_email = settings.EMAIL_HOST_USER
-        # recipient_list = [email1]
-
-        # try:
-        #     send_mail(subject, message, from_email, recipient_list)
-        #     return HttpResponse("<script>alert('OTP sent to your email. Please verify.');window.location='/otp_for_registration';</script>")
-        # except Exception as e:
-        #     return HttpResponse(f"<script>alert('Error sending email: {e}');window.location='/otp_for_registration';</script>")
-
     return render(request, 'public/register.html')
-
 
 def otp_for_registration(request):
         return render(request, 'public/otp_for_registration.html')
@@ -471,199 +371,11 @@ def logout(request):
     request.session['log']="out"
     return HttpResponse(f"<script>alert('Logged out');window.location='/login'</script>")
 
-
 from io import BytesIO
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from PyPDF2 import PdfReader  # Alternatively, use fitz (PyMuPDF) or pdfplumber for better extraction
 from summarizer import Summarizer  # Extractive summarizer
-
-# def user_home(request):
-#     userid = request.session['user_id']
-#     user = User.objects.get(id=userid)
-    
-#     extracted_text = None  # Variable to hold the extracted text
-#     summarized_text = None  # Variable to hold the summarized text
-
-#     if request.method == 'POST' and 'pdf_file' in request.FILES:
-#         # Get the uploaded PDF file
-#         uploaded_file = request.FILES['pdf_file']
-
-#         try:
-#             # Read the file into memory (using BytesIO)
-#             pdf_path = BytesIO(uploaded_file.read())
-
-#             # Create a PdfReader object from the file object
-#             reader = PdfReader(pdf_path)
-
-#             # Extract text from all pages
-#             extracted_text = ""
-#             for page_number in range(len(reader.pages)):
-#                 page = reader.pages[page_number]
-#                 text = page.extract_text()
-#                 extracted_text += text.strip() + "\n"
-
-#             # Summarize using BERT (Extractive Summarizer)
-#             model = Summarizer()  # Load the BERT extractive summarizer model
-
-#             if extracted_text:
-#                 # Summarize the extracted text
-#                 summarized_text = model(extracted_text, min_length=50, max_length=500)
-
-#                 # Save file and summary to the database
-#                 q1 = File(USER_id=userid, file=uploaded_file, output_summary=summarized_text, output_translated='pending')
-#                 q1.save()
-
-#         except Exception as e:
-#             print(f"Error processing the PDF: {e}")
-#             return render(request, 'user/user_home.html', {
-#                 'user': user,
-#                 'error': "There was an issue processing your PDF file. Please try again."
-#             })
-
-#     # Pass both extracted text and summarized text to the template
-#     return render(request, 'user/user_home.html', {
-#         'user': user,
-#         'extracted_text': extracted_text,
-#         'summarized_text': summarized_text
-#     })
-
-
-
-
-
-
-
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-# def upload_img(request):
-#     userid = request.session['user_id']
-#     user = User.objects.get(id=userid)
-
-#     extracted_text = None  # Variable to hold the extracted text from the image
-#     summarized_text = None  # Variable to hold the summarized text
-
-#     if request.method == 'POST':
-#         if 'image_file' in request.FILES:
-#             # Handle image file (e.g., JPG, PNG)
-#             uploaded_image = request.FILES['image_file']
-
-#             # Read the image file into memory (using BytesIO)
-#             image_path = BytesIO(uploaded_image.read())
-
-#             # Use Pillow to open the image
-#             image = Image.open(image_path)
-
-#             # Extract text from the image using pytesseract
-#             extracted_text = pytesseract.image_to_string(image)
-
-#             print("Extracted Text from Image:")
-#             print(extracted_text)
-
-            
-#             model = Summarizer()  
-
-#             if extracted_text:
-#                 summarized_text = model(extracted_text)
-#                 print("Summarized Text from Image:")
-#                 print(summarized_text)
-
-#                 # Save the summarized text and the file to the database (optional)
-#                 fs = FileSystemStorage()
-#                 fp = fs.save(uploaded_image.name, uploaded_image)
-#                 q1 = File(USER_id=userid, file=fs.url(fp), output_summary=summarized_text, output_translated='pending')
-#                 q1.save()
-
-#     # Pass the extracted text and summarized text to the template
-#     return render(request, 'user/upload_img.html',{
-#         'user': user,
-#         'extracted_text': extracted_text,
-#         'summarized_text': summarized_text }
-#     )
-
-
-
-
-
-
-# def process_file(request):
-#     userid = request.session['user_id']
-#     user = User.objects.get(id=userid)
-
-#     summarized_text = None
-#     extracted_text = None
-
-#     if request.method == 'POST' and 'input_file' in request.FILES:
-#         uploaded_file = request.FILES['input_file']
-#         file_type = uploaded_file.content_type
-
-#         try:
-#             if file_type.startswith('image/'):  # Check if it's an image file
-#                 # Image processing logic
-#                 image_path = BytesIO(uploaded_file.read())
-#                 image = Image.open(image_path)
-#                 extracted_text = pytesseract.image_to_string(image)
-
-#                 model = Summarizer()
-#                 if extracted_text:
-#                     summarized_text = model(extracted_text)
-
-#             elif file_type == 'application/pdf':  # Check if it's a PDF file
-#                 # PDF processing logic
-#                 pdf_path = BytesIO(uploaded_file.read())
-#                 reader = PdfReader(pdf_path)
-
-#                 extracted_text = ""
-#                 for page in reader.pages:
-#                     extracted_text += page.extract_text().strip() + "\n"
-
-#                 model = Summarizer()
-#                 if extracted_text:
-#                     summarized_text = model(extracted_text, min_length=50, max_length=500)
-
-#             # Save the file and summary to the database
-#             fs = FileSystemStorage()
-#             file_path = fs.save(uploaded_file.name, uploaded_file)
-#             q1 = File(USER_id=userid, file=fs.url(file_path), output_summary=summarized_text, output_translated='pending')
-#             q1.save()
-
-#         except Exception as e:
-#             print(f"Error processing file: {e}")
-#             return render(request, 'user/user_home.html', {
-#                 'user': user,
-#                 'error': "There was an issue processing your file. Please try again."
-#             })
-
-#     return render(request, 'user/user_home.html', {
-#         'user': user,
-#         'extracted_text': extracted_text,
-#         'summarized_text': summarized_text
-#     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-#----------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
 
 def process_file(request):
     userid = request.session['user_id']
@@ -727,20 +439,7 @@ def process_file(request):
         'uploaded_file_url': uploaded_file_url
     })
 
-
-
-
-
-
 #------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
 
 # def process_file(request):
 #     from io import BytesIO
